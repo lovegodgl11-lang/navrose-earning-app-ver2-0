@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="en" class=""><head><script>window.livecodes = window.livecodes || {};</script><title>Navrose earning app ver2.0</title><meta name="title" content="Navrose earning app ver2.0"><meta name="description" content="New Ecom style "><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="./style.css"><script src="https://cdn.jsdelivr.net/npm/es-module-shims@1.10.0/dist/es-module-shims.js" async=""></script><script type="importmap">{
+  "imports": {}
+}</script></head><body>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navrose</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <style>
+:root {
+    --primary-color: #002f34;
+    --secondary-color: #4caf50;
+    --background-color: #f0f2f5;
+    --card-background: #ffffff;
+    --text-color: #333;
+    --text-color-light: #6c757d;
+    --border-color: #dee2e6;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --border-radius: 8px;
+    --danger-color: #dc3545;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* --- HEADER --- */
+.header {
+    background-color: var(--card-background);
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 64px;
+}
+.logo {
+    font-size: 1.75rem;
+    color: var(--primary-color);
+    margin: 0;
+    cursor: pointer;
+}
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Added gap for spacing between icons */
+}
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+.btn-primary:hover {
+    background-color: #001f22;
+}
+.btn-primary:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* New Header Icon Button Styles */
+.header-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    position: relative;
+}
+.header-icon-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--primary-color);
+}
+.header-icon-btn:hover {
+    background-color: var(--background-color);
+}
+
+.cart-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--danger-color);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+
+/* --- USER & NOTIFICATION MENU --- */
+.user-menu-container, .notification-container {
+    position: relative;
+}
+.user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+}
+.user-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--primary-color);
+}
+.dropdown-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    width: 220px;
+    overflow: hidden;
+    z-index: 1100;
+    border: 1px solid var(--border-color);
+    max-height: 400px;
+    overflow-y: auto;
+}
+.notification-dropdown {
+    width: 320px;
+}
+.dropdown-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+    font-weight: bold;
+}
+.dropdown-menu a {
+    display: block;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.dropdown-menu a:last-child {
+    border-bottom: none;
+}
+.dropdown-menu a:hover {
+    background-color: var(--background-color);
+}
+.notification-message {
+    font-size: 0.9rem;
+    white-space: normal;
+}
+.notification-time {
+    display: block;
+    color: var(--text-color-light);
+    font-size: 0.75rem;
+    margin-top: 4px;
+}
+.no-notifications {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-color-light);
+}
+
+
+/* --- MAIN CONTENT & GRIDS --- */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+.category-section {
+    margin-bottom: 2.5rem;
+}
+.category-section h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+.product-card, .offer-card {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+.product-card:hover, .offer-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+.product-image, .offer-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background-color: #eee;
+}
+.product-info, .offer-info {
+    padding: 1rem;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.product-title, .offer-title {
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.product-price {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 0 0 1rem;
+}
+.offer-description {
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+    margin-top: 0;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: auto;
+    transition: background-color 0.2s;
+}
+.btn-secondary:hover {
+    background-color: #45a049;
+}
+
+/* --- FORMS --- */
+.form-container {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    max-width: 600px;
+    margin: 2rem auto;
+}
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+}
+.image-preview {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+/* --- LIST VIEWS (My Ads, etc) --- */
+.list-container {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1rem;
+}
+.list-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    gap: 1rem;
+}
+.list-item:last-child {
+    border-bottom: none;
+}
+.list-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+}
+.item-details {
+    flex-grow: 1;
+}
+.item-details h4 { margin: 0 0 0.25rem; }
+.item-details p { margin: 0; color: var(--text-color-light); }
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    text-transform: capitalize;
+}
+.status-approved, .status-active { background-color: var(--secondary-color); }
+.status-pending { background-color: #ffc107; color: var(--text-color); }
+.status-rejected { background-color: #dc3545; }
+
+
+/* --- MODAL, SPINNER, CART, TOAST --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1500;
+}
+.modal-content {
+    background: var(--card-background);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 450px; /* Increased max-width for payment modal */
+    position: relative;
+    text-align: center;
+}
+.modal-close-btn {
+    position: absolute; top: 10px; right: 15px;
+    background: none; border: none; font-size: 2rem; cursor: pointer;
+    color: var(--text-color-light);
+}
+.auth-modal h2 { margin-top: 0; color: var(--primary-color); }
+.auth-modal .form-group button { width: 100%; margin-top: 0.5rem; padding: 0.75rem; font-size: 1rem; }
+.error-message { color: var(--danger-color); }
+#recaptcha-container { margin-top: 1rem; }
+
+.toast {
+    position: fixed;
+    top: 80px; /* Below the header */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    color: white;
+    z-index: 2000;
+    opacity: 0;
+    transform: translate(-50%, -20px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    visibility: hidden;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 300px;
+    text-align: center;
+}
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%);
+    visibility: visible;
+}
+.toast-success { background-color: var(--secondary-color); }
+.toast-error { background-color: var(--danger-color); }
+
+/* --- PAYMENT MODAL --- */
+.payment-instructions {
+    text-align: center;
+    background-color: var(--background-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+.payment-instructions p { margin: 0 0 1rem; }
+.payment-instructions strong { color: var(--primary-color); font-size: 1.1rem; }
+.qr-code-image {
+    display: block;
+    max-width: 200px;
+    margin: 0.5rem auto 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+
+.loading-container {
+    display: flex; justify-content: center; align-items: center;
+    min-height: 80vh; flex-direction: column; gap: 1rem;
+    color: var(--primary-color);
+}
+.spinner {
+    border: 5px solid rgba(0, 47, 52, 0.1);
+    width: 50px; height: 50px; border-radius: 50%;
+    border-left-color: var(--primary-color);
+    animation: spin 1s ease infinite;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* --- CART PAGE STYLES --- */
+.cart-modal-content {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 800px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.cart-header h2 {
+    margin: 0;
+    color: var(--primary-color);
+}
+.cart-items-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+.empty-cart-message {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+    color: var(--text-color-light);
+}
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.cart-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+.cart-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+}
+.cart-item-info {
+    flex-grow: 1;
+}
+.cart-item-info h4 { margin: 0 0 0.5rem; }
+.cart-item-info p { margin: 0; font-weight: bold; color: var(--primary-color); }
+.cart-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+.quantity-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+.quantity-control button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+}
+.quantity-control button:disabled {
+    color: var(--border-color);
+    cursor: not-allowed;
+}
+.quantity-control span {
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+}
+.btn-remove {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+.cart-summary {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    text-align: right;
+}
+.cart-summary h3 {
+    margin: 0 0 1rem;
+}
+.cart-summary .btn-primary {
+    width: auto;
+    padding: 0.75rem 2rem;
+}
+
+/* --- ORDER CONFIRMATION MODAL --- */
+.confirmation-modal {
+    text-align: center;
+}
+.confirmation-modal h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.confirmation-modal p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+.confirmation-modal .btn-primary {
+    width: 100%;
+}
+
+/* --- MY ORDERS PAGE --- */
+.order-list-item {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+}
+.order-list-item:last-child {
+    margin-bottom: 0;
+}
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.order-header h4 {
+    margin: 0 0 0.25rem;
+    color: var(--primary-color);
+}
+.order-header p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+}
+.order-summary {
+    text-align: right;
+    flex-shrink: 0;
+}
+.order-total {
+    font-weight: bold;
+    font-size: 1.1rem !important;
+    color: var(--text-color) !important;
+}
+.order-summary .status-badge {
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+.order-items {
+    font-size: 0.9rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.order-item-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+.order-item-detail:last-child {
+    border-bottom: none;
+}
+
+/* --- CHATBOT MODAL --- */
+.chatbot-modal-overlay { z-index: 1600; }
+.chatbot-modal-content {
+    max-width: 400px;
+    height: 70vh;
+    max-height: 600px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+.chatbot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+.chatbot-header h3 { margin: 0; }
+.chatbot-header .modal-close-btn { color: white; position: static; font-size: 1.5rem; }
+.chatbot-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.message-bubble-wrapper { display: flex; }
+.user-wrapper { justify-content: flex-end; }
+.bot-wrapper { justify-content: flex-start; }
+.message-bubble {
+    padding: 0.75rem 1rem;
+    border-radius: 18px;
+    max-width: 80%;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+.user-message {
+    background-color: var(--primary-color);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+.bot-message {
+    background-color: var(--card-background);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+}
+.bot-message a {
+    color: var(--secondary-color);
+    font-weight: bold;
+    text-decoration: underline;
+}
+.chatbot-input-area {
+    display: flex;
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    gap: 0.5rem;
+}
+.chatbot-input-area input {
+    flex-grow: 1;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.75rem;
+}
+.chatbot-input-area button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+
+@media (max-width: 768px) {
+    .header-content { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .header-actions { gap: 0.25rem; }
+    .main-content { padding: 1rem; }
+    .product-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+    .logo { font-size: 1.5rem; }
+    .cart-item { flex-direction: column; align-items: flex-start; }
+    .cart-item-actions { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
+}
+    </style>
+<link rel="stylesheet" href="/index.css">
+
+
+    <div id="root"></div>
+    <script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo, useRef } = React;
+
+// --- FIREBASE SETUP ---
+const firebaseConfig = {
+  apiKey: "AIzaSyBujn2I22eC_t2sUA-ViStOmVL1nMZ3Lxo",
+  authDomain: "navrose-earning.firebaseapp.com",
+  projectId: "navrose-earning",
+  storageBucket: "navrose-earning.firebasestorage.app",
+  messagingSenderId: "864112302885",
+  appId: "1:864112302885:web:267c420e9ee34d7f4718cc"
+};
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
+// --- HELPER & UTILITY COMPONENTS ---
+const compressImageToBase64 = (file) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onerror = reject;
+    reader.onload = (event) => {
+        if (event.target && typeof event.target.result === 'string') {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onerror = reject;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const maxWidth = 800;
+                const scaleSize = maxWidth / img.width;
+                canvas.width = maxWidth;
+                canvas.height = img.height * scaleSize;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.7));
+                } else {
+                    reject(new Error('Could not get canvas context.'));
+                }
+            };
+        } else {
+            reject(new Error('FileReader result is not a string.'));
+        }
+    };
+});
+
+const LoadingSpinner = () => (
+    <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading Navrose...</p>
+    </div>
+);
+
+const Toast = ({ message, type, show, onHide }) => {
+    useEffect(() => {
+        if (show) {
+            const timer = setTimeout(() => onHide(), 4000); // Auto-hide after 4s
+            return () => clearTimeout(timer);
+        }
+    }, [show, onHide]);
+
+    if (!show) return null;
+
+    return (
+        <div className={`toast toast-${type} ${show ? 'show' : ''}`}>
+            {message}
+        </div>
+    );
+};
+
+const OrderConfirmationModal = ({ show, message, onClose }) => {
+    if (!show) return null;
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content confirmation-modal">
+                <h3>Order Status</h3>
+                <p>{message}</p>
+                <button className="btn-primary" onClick={onClose}>OK</button>
+            </div>
+        </div>
+    );
+};
+
+// --- NEW PAYMENT MODAL COMPONENT ---
+const PaymentModal = ({ show, onCancel, cart, onSubmit, isSubmitting, paymentSettings }) => {
+    if (!show) return null;
+
+    const [paymentProof, setPaymentProof] = useState(null);
+    const total = useMemo(() => cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0), [cart]);
+
+    const handleFileChange = async (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const base64 = await compressImageToBase64(e.target.files[0]);
+            setPaymentProof(base64);
+        }
+    };
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <button className="modal-close-btn" onClick={onCancel}>&times;</button>
+                <h3>Payment Required</h3>
+                <p>Your order total is <strong>₹{total.toFixed(2)}</strong>.</p>
+                
+                <div className="payment-instructions">
+                    <p>Scan the QR code or pay to the UPI ID below and upload a screenshot of the payment.</p>
+                    {paymentSettings.qrCodeBase64 && <img src={paymentSettings.qrCodeBase64} alt="Scan to pay" className="qr-code-image" />}
+                    <strong>{paymentSettings.upiId}</strong>
+                </div>
+
+                <div className="form-group">
+                    <label>Upload Payment Proof (Screenshot)</label>
+                    <input type="file" accept="image/*" onChange={handleFileChange} required />
+                    {paymentProof && <img src={paymentProof} alt="Payment proof preview" className="image-preview" />}
+                </div>
+                
+                <button 
+                    className="btn-primary" 
+                    style={{width: '100%'}}
+                    onClick={() => onSubmit(paymentProof)}
+                    disabled={!paymentProof || isSubmitting}
+                >
+                    {isSubmitting ? 'Submitting...' : 'Submit Order & Proof'}
+                </button>
+            </div>
+        </div>
+    );
+};
+
+
+// --- CHATBOT MODAL ---
+const ChatbotModal = ({ show, onClose }) => {
+    const [messages, setMessages] = useState([
+        { sender: 'bot', text: "Hi! Welcome to Navrose Support. How can I help you today? You can ask about orders, ads, or your freelance profile." }
+    ]);
+    const [inputValue, setInputValue] = useState('');
+    const messagesEndRef = useRef(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(scrollToBottom, [messages]);
+
+    const generateBotResponse = (userInput) => {
+        const lowerInput = userInput.toLowerCase();
+        
+        const adminContactLink = `<a href="https://wa.me/917696272780" target="_blank" rel="noopener noreferrer">contact our admin on WhatsApp</a>`;
+
+        if (lowerInput.includes('order') || lowerInput.includes('delivery') || lowerInput.includes('status')) {
+            return "You can check your order status on the 'My Orders' page from the user menu. If you have a specific query, please provide your Order ID when you " + adminContactLink + ".";
+        }
+        if (lowerInput.includes('freelance') || lowerInput.includes('profile')) {
+            return "You can create or view your freelance profile from the user menu (click your profile icon). Profiles are typically approved by our team within 24 hours.";
+        }
+        if (lowerInput.includes('ad') || lowerInput.includes('post') || lowerInput.includes('sell')) {
+            return "To post an ad, click on your profile icon in the top right and select 'Post New Ad'. Your ad will become visible after it has been approved by our admin team.";
+        }
+        if (lowerInput.includes('payment') || lowerInput.includes('upi') || lowerInput.includes('pay')) {
+            return "We accept payments via UPI. You can find the UPI ID and a QR code on the payment screen when you proceed to checkout from your cart.";
+        }
+        if (lowerInput.includes('hello') || lowerInput.includes('hi') || lowerInput.includes('hey')) {
+            return "Hello! How can I assist you?";
+        }
+
+        return "I'm sorry, I couldn't understand that. For more specific questions, please " + adminContactLink + ". Our team will be happy to assist you.";
+    };
+
+    const handleSendMessage = (e) => {
+        e.preventDefault();
+        const trimmedInput = inputValue.trim();
+        if (!trimmedInput) return;
+
+        const userMessage = { sender: 'user', text: trimmedInput };
+        setMessages(prev => [...prev, userMessage]);
+        setInputValue('');
+
+        setTimeout(() => {
+            const botResponseText = generateBotResponse(trimmedInput);
+            const botMessage = { sender: 'bot', text: botResponseText };
+            setMessages(prev => [...prev, botMessage]);
+        }, 500); // Simulate bot "thinking"
+    };
+
+    if (!show) return null;
+
+    return (
+        <div className="modal-overlay chatbot-modal-overlay">
+            <div className="modal-content chatbot-modal-content">
+                <div className="chatbot-header">
+                    <h3>Navrose Support</h3>
+                    <button className="modal-close-btn" onClick={onClose}>&times;</button>
+                </div>
+                <div className="chatbot-messages">
+                    {messages.map((msg, index) => (
+                        <div key={index} className={`message-bubble-wrapper ${msg.sender}-wrapper`}>
+                           <div className={`message-bubble ${msg.sender}-message`}>
+                                <span dangerouslySetInnerHTML={{ __html: msg.text }}></span>
+                           </div>
+                        </div>
+                    ))}
+                    <div ref={messagesEndRef} />
+                </div>
+                <form className="chatbot-input-area" onSubmit={handleSendMessage}>
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        placeholder="Type your message..."
+                        autoFocus
+                    />
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+// --- HEADER & NAVIGATION ---
+const Header = ({ currentUser, onLogout, setView, onShowLogin, cartItemCount, onShowCart, onShowChat }) => {
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [notificationsOpen, setNotificationsOpen] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    const menuRef = useRef(null);
+    const notificationRef = useRef(null);
+    
+    const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
+
+    useEffect(() => {
+        if (!currentUser) {
+            setNotifications([]);
+            return;
+        }
+        const unsub = db.collection('notifications')
+            .where('userId', '==', currentUser.mobile)
+            .onSnapshot(snapshot => {
+                const notifs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Sort and limit on the client side to get the latest notifications
+                notifs.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                setNotifications(notifs.slice(0, 10));
+            });
+        return () => unsub();
+    }, [currentUser]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) setMenuOpen(false);
+            if (notificationRef.current && !notificationRef.current.contains(event.target)) setNotificationsOpen(false);
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [menuRef, notificationRef]);
+
+    const handleMenuClick = (view) => {
+        setView(view);
+        setMenuOpen(false);
+    };
+    
+    const handleOpenNotifications = () => {
+        setNotificationsOpen(prev => !prev);
+        if (!notificationsOpen) { // Only mark as read when opening
+            const unreadIds = notifications.filter(n => !n.read).map(n => n.id);
+            if (unreadIds.length > 0) {
+                const batch = db.batch();
+                unreadIds.forEach(id => {
+                    const docRef = db.collection('notifications').doc(id);
+                    batch.update(docRef, { read: true });
+                });
+                batch.commit().catch(err => console.error("Error marking notifications as read:", err));
+            }
+        }
+    };
+    
+    const handleNotificationClick = (notification) => {
+        if (notification.link) setView(notification.link);
+        setNotificationsOpen(false);
+    };
+
+    return (
+        <header className="header">
+            <div className="header-content">
+                <h1 className="logo" onClick={() => setView('home')}>Navrose</h1>
+                <div className="header-actions">
+                    <button className="header-icon-btn" title="Home" onClick={() => setView('home')}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                    </button>
+                    <button className="header-icon-btn" title="Ghar Ki Kitchen" onClick={() => setView('kitchen')}>
+                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6v8h3v8h2V2c-2.76 0-5 2.24-5 4zm-5 3H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7z"></path></svg>
+                    </button>
+                     <button className="header-icon-btn" title="Flash Offers" onClick={() => setView('flashOffers')}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"></path></svg>
+                    </button>
+                    <button className="header-icon-btn cart-btn" title="Cart" onClick={onShowCart}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"></path></svg>
+                        {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
+                    </button>
+                    <div className="notification-container" ref={notificationRef}>
+                        <button className="header-icon-btn" title="Notifications" onClick={handleOpenNotifications}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path></svg>
+                            {unreadCount > 0 && <span className="cart-badge">{unreadCount}</span>}
+                        </button>
+                        {notificationsOpen && (
+                            <div className="dropdown-menu notification-dropdown">
+                                <div className="dropdown-header">Notifications</div>
+                                {notifications.length > 0 ? (
+                                    notifications.map(n => (
+                                        <a key={n.id} onClick={() => handleNotificationClick(n)}>
+                                            <span className="notification-message">{n.message}</span>
+                                            <span className="notification-time">
+                                                {n.createdAt?.toDate().toLocaleString()}
+                                            </span>
+                                        </a>
+                                    ))
+                                ) : (
+                                    <div className="no-notifications">No new notifications</div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                     <button className="header-icon-btn" title="Chat" onClick={onShowChat}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path></svg>
+                    </button>
+                    
+                    {currentUser ? (
+                        <div className="user-menu-container" ref={menuRef}>
+                            <div className="user-icon" onClick={() => setMenuOpen(!menuOpen)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>
+                            </div>
+                            {menuOpen && (
+                                <div className="dropdown-menu">
+                                    <div className="dropdown-header">
+                                        Signed in as <br/><strong>{currentUser.name}</strong><br/><small>{currentUser.mobile}</small>
+                                    </div>
+                                    <a onClick={() => handleMenuClick('postAd')}>Post New Ad</a>
+                                    <a onClick={() => handleMenuClick('postFreelance')}>Become a Freelancer</a>
+                                    <a onClick={() => handleMenuClick('myAds')}>My Ads</a>
+                                    <a onClick={() => handleMenuClick('myFreelanceProfile')}>My Freelance Profile</a>
+                                    <a onClick={() => handleMenuClick('myOrders')}>My Orders</a>
+                                    <a onClick={onLogout}>Logout</a>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <button className="btn-primary" onClick={onShowLogin}>Login / Sign Up</button>
+                    )}
+                </div>
+            </div>
+        </header>
+    );
+};
+
+
+// --- AUTHENTICATION PAGE ---
+const LoginPage = ({ onLoginSuccess, onCancel, showToast }) => {
+    const [name, setName] = useState('');
+    const [mobile, setMobile] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleLogin = async () => {
+        if (name.trim().length < 3) {
+            showToast('Please enter a valid name (at least 3 characters).', 'error');
+            return;
+        }
+        if (mobile.length !== 10 || !/^\d{10}$/.test(mobile)) {
+            showToast('Please enter a valid 10-digit mobile number.', 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const phoneNumber = `+91${mobile}`;
+            const userDocRef = db.collection('users').doc(phoneNumber);
+            const userDoc = await userDocRef.get();
+            
+            if (userDoc.exists) {
+                const data = userDoc.data();
+                if (data && data.name !== name) {
+                     await userDocRef.update({ name });
+                }
+                onLoginSuccess({ name, mobile: phoneNumber }, 'Login successful. Welcome back!');
+
+            } else {
+                await userDocRef.set({
+                    name: name,
+                    mobile: phoneNumber,
+                    role: 'user',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                onLoginSuccess({ name, mobile: phoneNumber }, 'Registration successful! Welcome to Navrose.');
+            }
+
+        } catch (err) {
+            showToast('An error occurred. Please try again.', 'error');
+            console.error(err);
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content auth-modal">
+                <button className="modal-close-btn" onClick={onCancel}>&times;</button>
+                <h2>Welcome to Navrose</h2>
+                <p>Enter your name and number to continue</p>
+                <div className="form-group">
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name" />
+                </div>
+                <div className="form-group">
+                    <input type="tel" value={mobile} onChange={(e) => setMobile(e.target.value)} placeholder="Enter 10-digit mobile number" maxLength={10}/>
+                </div>
+                <div className="form-group">
+                    <button onClick={handleLogin} disabled={loading || name.length < 3 || mobile.length !== 10}>
+                        {loading ? 'Processing...' : 'Login / Sign Up'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+// --- PRODUCT & OFFER CARDS ---
+const ProductCard = ({ item, onAddToCart, type }) => {
+    const isFreelance = type === 'freelance';
+
+    const handleAction = () => {
+        if (isFreelance) {
+            if (item.user) {
+                const phoneNumber = item.user.replace('+', '');
+                const message = encodeURIComponent(`Hi, I'm interested in your freelance service "${item.title || item.name}" listed on Navrose.`);
+                window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+            } else {
+                alert('Contact information for this freelancer is not available.');
+            }
+        } else {
+            // This is for 'marketplace' and 'kitchen'
+            onAddToCart(item);
+        }
+    };
+
+    const getButtonText = () => {
+        if (isFreelance) return 'Contact Freelancer';
+        if (type === 'kitchen') return 'Order Now';
+        return 'Add to Cart';
+    };
+
+    return (
+        <div className="product-card">
+            <img src={item.imageBase64 || 'https://via.placeholder.com/300'} alt={item.title || item.name} className="product-image" />
+            <div className="product-info">
+                <h3 className="product-title">{item.title || item.name}</h3>
+                <p className="product-price">₹{item.price}</p>
+                <button className="btn-secondary" onClick={handleAction}>{getButtonText()}</button>
+            </div>
+        </div>
+    );
+};
+
+const OfferCard = ({ offer }) => (
+    <div className="offer-card">
+        <img src={offer.imageBase64 || 'https://via.placeholder.com/300'} alt={offer.title} className="offer-image" />
+        <div className="offer-info">
+            <h3 className="offer-title">{offer.title}</h3>
+            <p className="offer-description">{offer.description}</p>
+        </div>
+    </div>
+);
+
+
+// --- VIEWS / PAGES ---
+const HomePage = ({ onAddToCart }) => {
+    const [ads, setAds] = useState([]);
+    const [kitchenItems, setKitchenItems] = useState([]);
+    const [freelanceProfiles, setFreelanceProfiles] = useState([]);
+    const [boosterOffers, setBoosterOffers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const adsSnap = await db.collection('ads').where('status', '==', 'approved').limit(4).get();
+                const adsData = adsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                adsData.sort((a, b) => ((b.createdAt && b.createdAt.toMillis()) || 0) - ((a.createdAt && a.createdAt.toMillis()) || 0));
+                setAds(adsData);
+
+                const kitchenSnap = await db.collection('kitchenItems').where('isAvailable', '==', true).limit(4).get();
+                const kitchenData = kitchenSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                kitchenData.sort((a, b) => ((b.createdAt && b.createdAt.toMillis()) || 0) - ((a.createdAt && a.createdAt.toMillis()) || 0));
+                setKitchenItems(kitchenData);
+                
+                const freelanceSnap = await db.collection('freelanceProfiles').where('status', '==', 'active').limit(4).get();
+                const freelanceData = freelanceSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                freelanceData.sort((a, b) => ((b.createdAt && b.createdAt.toMillis()) || 0) - ((a.createdAt && a.createdAt.toMillis()) || 0));
+                setFreelanceProfiles(freelanceData);
+                
+                const boosterSnap = await db.collection('boosterOffers').orderBy('createdAt', 'desc').limit(4).get();
+                const boosterData = boosterSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setBoosterOffers(boosterData);
+
+            } catch (error) {
+                console.error("Error fetching homepage data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    if (loading) return <LoadingSpinner />;
+
+    return (
+        <main className="main-content">
+             {boosterOffers.length > 0 && (
+                <section className="category-section">
+                    <h2>Today's Flash Offers</h2>
+                    <div className="product-grid">
+                        {boosterOffers.map((offer) => <OfferCard key={`offer-${offer.id}`} offer={offer} />)}
+                    </div>
+                </section>
+            )}
+            {ads.length > 0 && (
+                <section className="category-section">
+                    <h2>Marketplace</h2>
+                    <div className="product-grid">
+                        {ads.map((ad) => <ProductCard key={`ad-${ad.id}`} item={ad} onAddToCart={onAddToCart} type="marketplace" />)}
+                    </div>
+                </section>
+            )}
+            {kitchenItems.length > 0 && (
+                <section className="category-section">
+                    <h2>Ghar Ki Kitchen</h2>
+                    <div className="product-grid">
+                        {kitchenItems.map((item) => <ProductCard key={`kitchen-${item.id}`} item={item} onAddToCart={onAddToCart} type="kitchen" />)}
+                    </div>
+                </section>
+            )}
+             {freelanceProfiles.length > 0 && (
+                <section className="category-section">
+                    <h2>Freelance Services</h2>
+                    <div className="product-grid">
+                        {freelanceProfiles.map((profile) => <ProductCard key={`freelance-${profile.id}`} item={profile} onAddToCart={onAddToCart} type="freelance" />)}
+                    </div>
+                </section>
+            )}
+        </main>
+    );
+};
+
+const KitchenPage = ({ onAddToCart }) => {
+    const [kitchenItems, setKitchenItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchItems = async () => {
+            try {
+                const kitchenSnap = await db.collection('kitchenItems')
+                    .where('isAvailable', '==', true)
+                    .get();
+                const kitchenData = kitchenSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Sort client-side to show newest items first
+                kitchenData.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                setKitchenItems(kitchenData);
+            } catch (error) {
+                console.error("Error fetching kitchen items:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchItems();
+    }, []);
+
+    if (loading) return <LoadingSpinner />;
+
+    return (
+        <main className="main-content">
+            <section className="category-section">
+                <h2>Ghar Ki Kitchen</h2>
+                {kitchenItems.length > 0 ? (
+                    <div className="product-grid">
+                        {kitchenItems.map((item) => <ProductCard key={item.id} item={item} onAddToCart={onAddToCart} type="kitchen" />)}
+                    </div>
+                ) : (
+                    <p>No items available in the kitchen right now. Please check back later!</p>
+                )}
+            </section>
+        </main>
+    );
+};
+
+const FlashOffersPage = () => {
+    const [offers, setOffers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchOffers = async () => {
+            try {
+                const boosterSnap = await db.collection('boosterOffers')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+                const boosterData = boosterSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setOffers(boosterData);
+            } catch (error) {
+                console.error("Error fetching flash offers:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchOffers();
+    }, []);
+
+    if (loading) return <LoadingSpinner />;
+
+    return (
+        <main className="main-content">
+            <section className="category-section">
+                <h2>Flash Offers</h2>
+                {offers.length > 0 ? (
+                     <div className="product-grid">
+                        {offers.map((offer) => <OfferCard key={offer.id} offer={offer} />)}
+                    </div>
+                ) : (
+                    <p>No flash offers available at the moment. Stay tuned!</p>
+                )}
+            </section>
+        </main>
+    );
+};
+
+
+const PostAdPage = ({ currentUser, onAdPosted }) => {
+    const [title, setTitle] = useState('');
+    const [price, setPrice] = useState('');
+    const [imageBase64, setImageBase64] = useState(null);
+    const [loading, setLoading] = useState(false);
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await db.collection('ads').add({
+                title,
+                price: Number(price),
+                imageBase64,
+                user: currentUser.mobile,
+                status: 'pending',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert('Ad submitted for approval!');
+            onAdPosted();
+        } catch (error) {
+            console.error("Error posting ad: ", error);
+            alert('Failed to post ad.');
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    const handleFileChange = async (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const base64 = await compressImageToBase64(e.target.files[0]);
+            setImageBase64(base64);
+        }
+    };
+
+    return (
+        <main className="main-content">
+            <div className="form-container">
+                <h2>Post a New Ad</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Ad Title</label>
+                        <input type="text" value={title} onChange={e => setTitle(e.target.value)} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Price (₹)</label>
+                        <input type="number" value={price} onChange={e => setPrice(e.target.value)} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Image</label>
+                        <input type="file" accept="image/*" onChange={handleFileChange} required />
+                        {imageBase64 && <img src={imageBase64} alt="Preview" className="image-preview" />}
+                    </div>
+                    <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Submitting...' : 'Submit for Approval'}</button>
+                </form>
+            </div>
+        </main>
+    );
+};
+
+const PostFreelancePage = ({ currentUser, onProfilePosted }) => {
+    const [name, setName] = useState('');
+    const [title, setTitle] = useState('');
+    const [price, setPrice] = useState('');
+    const [imageBase64, setImageBase64] = useState(null);
+    const [loading, setLoading] = useState(false);
+    
+    useEffect(() => {
+        if (currentUser && currentUser.name) {
+            setName(currentUser.name);
+        }
+    }, [currentUser]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await db.collection('freelanceProfiles').add({
+                name,
+                title,
+                price, // Price is a string for flexibility (e.g., "500/hr")
+                imageBase64,
+                user: currentUser.mobile,
+                status: 'pending',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert('Freelance profile submitted for approval!');
+            onProfilePosted();
+        } catch (error) {
+            console.error("Error posting freelance profile: ", error);
+            alert('Failed to post profile.');
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    const handleFileChange = async (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const base64 = await compressImageToBase64(e.target.files[0]);
+            setImageBase64(base64);
+        }
+    };
+
+    return (
+        <main className="main-content">
+            <div className="form-container">
+                <h2>Create Your Freelance Profile</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Full Name</label>
+                        <input type="text" value={name} onChange={e => setName(e.target.value)} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Service Title (e.g., Graphic Designer)</label>
+                        <input type="text" value={title} onChange={e => setTitle(e.target.value)} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Rate (e.g., ₹500/hour, ₹2000/project)</label>
+                        <input type="text" value={price} onChange={e => setPrice(e.target.value)} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Profile Image or Portfolio Sample</label>
+                        <input type="file" accept="image/*" onChange={handleFileChange} required />
+                        {imageBase64 && <img src={imageBase64} alt="Preview" className="image-preview" />}
+                    </div>
+                    <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Submitting...' : 'Submit for Approval'}</button>
+                </form>
+            </div>
+        </main>
+    );
+};
+
+const MyAdsPage = ({ currentUser }) => {
+    const [myAds, setMyAds] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchAds = async () => {
+            if (!currentUser || !currentUser.mobile) {
+                setLoading(false);
+                return;
+            }
+            try {
+                const snapshot = await db.collection('ads').where('user', '==', currentUser.mobile).get();
+                const adsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                adsData.sort((a, b) => ((b.createdAt && b.createdAt.toMillis()) || 0) - ((a.createdAt && a.createdAt.toMillis()) || 0));
+                setMyAds(adsData);
+            } catch (error) { console.error("Error fetching my ads: ", error); }
+            finally { setLoading(false); }
+        };
+        fetchAds();
+    }, [currentUser]);
+
+    if (loading) return <LoadingSpinner />;
+
+    return (
+        <main className="main-content">
+            <h2>My Ads</h2>
+            <div className="list-container">
+                {myAds.length === 0 ? <p>You haven't posted any ads yet.</p> :
+                    myAds.map(ad => (
+                        <div key={ad.id} className="list-item">
+                            <img src={ad.imageBase64 || 'https://via.placeholder.com/100'} alt={ad.title} />
+                            <div className="item-details">
+                                <h4>{ad.title}</h4>
+                                <p>Price: ₹{ad.price}</p>
+                            </div>
+                            <span className={`status-badge status-${ad.status}`}>{ad.status}</span>
+                        </div>
+                    ))
+                }
+            </div>
+        </main>
+    );
+};
+
+const MyFreelanceProfilePage = ({ currentUser, setView }) => {
+    const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (!currentUser || !currentUser.mobile) {
+                setLoading(false); return;
+            }
+            try {
+                const snapshot = await db.collection('freelanceProfiles')
+                    .where('user', '==', currentUser.mobile).limit(1).get();
+                if (!snapshot.empty) {
+                    setProfile({ id: snapshot.docs[0].id, ...snapshot.docs[0].data() });
+                }
+            } catch (error) { console.error("Error fetching freelance profile: ", error); }
+             finally { setLoading(false); }
+        };
+        fetchProfile();
+    }, [currentUser]);
+
+    if (loading) return <LoadingSpinner />;
+
+    return (
+        <main className="main-content">
+            <h2>My Freelance Profile</h2>
+            <div className="list-container">
+                {profile ? (
+                    <div className="list-item">
+                        <img src={profile.imageBase64 || 'https://via.placeholder.com/100'} alt={profile.name} />
+                        <div className="item-details">
+                            <h4>{profile.name}</h4>
+                            <p>Service: {profile.title}</p>
+                            <p>Rate: {profile.price}</p>
+                        </div>
+                        <span className={`status-badge status-${profile.status}`}>{profile.status}</span>
+                    </div>
+                ) : (
+                    <p>You haven't created a freelance profile yet. <a href="#" onClick={(e) => { e.preventDefault(); setView('postFreelance'); }}>Create one now!</a></p>
+                )}
+            </div>
+        </main>
+    );
+};
+
+const MyOrdersPage = ({ currentUser }) => {
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!currentUser || !currentUser.mobile) {
+            setLoading(false);
+            return;
+        }
+
+        const fetchOrders = async () => {
+            try {
+                const snapshot = await db.collection('kitchenOrders')
+                    .where('user', '==', currentUser.mobile)
+                    .get();
+                
+                const ordersData = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+
+                ordersData.sort((a, b) => ((b.createdAt && b.createdAt.toMillis()) || 0) - ((a.createdAt && a.createdAt.toMillis()) || 0));
+
+                setOrders(ordersData);
+            } catch (error) {
+                console.error("Error fetching orders: ", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOrders();
+    }, [currentUser]);
+
+    if (loading) return <LoadingSpinner />;
+
+    return (
+        <main className="main-content">
+            <h2>My Orders</h2>
+            <div className="list-container">
+                {orders.length === 0 ? (
+                    <p>You have no past orders.</p>
+                ) : (
+                    orders.map(order => (
+                        <div key={order.id} className="order-list-item">
+                            <div className="order-header">
+                                <div>
+                                    <h4>Order ID: {order.id.substring(0, 8).toUpperCase()}</h4>
+                                    <p>Placed on: {order.createdAt && order.createdAt.toDate().toLocaleDateString('en-IN', {
+                                        day: 'numeric', month: 'long', year: 'numeric'
+                                    })}</p>
+                                </div>
+                                <div className="order-summary">
+                                    <span className={`status-badge status-${order.status}`}>{order.status}</span>
+                                    <p className="order-total">Total: ₹{(order.total || 0).toFixed(2)}</p>
+                                </div>
+                            </div>
+                            <ul className="order-items">
+                                {(order.items || []).map((item, index) => (
+                                    <li key={index} className="order-item-detail">
+                                        <span>{item.title || 'Unnamed Item'} (x{item.quantity || 1})</span>
+                                        <span>₹{((item.price || 0) * (item.quantity || 1)).toFixed(2)}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))
+                )}
+            </div>
+        </main>
+    );
+};
+
+const CartPage = ({ cart, onUpdateQuantity, onRemove, onConfirm, onCancel, isSubmitting }) => {
+    const subtotal = useMemo(() => cart.reduce((total, item) => total + ((item.price || 0) * (item.quantity || 1)), 0), [cart]);
+
+    return (
+        <div className="modal-overlay">
+            <div className="cart-modal-content">
+                <div className="cart-header">
+                    <h2>Your Cart</h2>
+                    <button className="modal-close-btn" onClick={onCancel}>&times;</button>
+                </div>
+                {cart.length === 0 ? (
+                    <p className="empty-cart-message">Your cart is empty.</p>
+                ) : (
+                    <>
+                        <div className="cart-items-list">
+                            {cart.map(item => (
+                                <div className="cart-item" key={item.id}>
+                                    <img src={item.imageBase64 || 'https://via.placeholder.com/100'} alt={item.title || item.name} />
+                                    <div className="cart-item-info">
+                                        <h4>{item.title || item.name}</h4>
+                                        <p>₹{item.price}</p>
+                                    </div>
+                                    <div className="cart-item-actions">
+                                        <div className="quantity-control">
+                                            <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)} disabled={item.quantity <= 1}>-</button>
+                                            <span>{item.quantity}</span>
+                                            <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}>+</button>
+                                        </div>
+                                        <button className="btn-remove" onClick={() => onRemove(item.id)}>Remove</button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="cart-summary">
+                            <h3>Subtotal: ₹{subtotal.toFixed(2)}</h3>
+                            <button className="btn-primary" onClick={onConfirm} disabled={isSubmitting}>
+                                {isSubmitting ? 'Proceeding...' : 'Confirm Order'}
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+};
+
+
+// --- MAIN APP COMPONENT ---
+const App = () => {
+    const [currentUser, setCurrentUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [view, setView] = useState('home');
+    const [showLogin, setShowLogin] = useState(false);
+    const [actionQueue, setActionQueue] = useState(null);
+    const [cart, setCart] = useState([]);
+    const [showCart, setShowCart] = useState(false);
+    const [showChatbot, setShowChatbot] = useState(false);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [orderConfirmation, setOrderConfirmation] = useState({ show: false, message: '' });
+    const [paymentSettings, setPaymentSettings] = useState({ upiId: '7696272780@okbizaxis', qrCodeBase64: null });
+    const [toast, setToast] = useState({ show: false, message: '', type: '' });
+
+
+    useEffect(() => {
+        try {
+            const storedUser = localStorage.getItem('navroseUser');
+            if (storedUser) {
+                setCurrentUser(JSON.parse(storedUser));
+            }
+        } catch (error) {
+            console.error("Failed to parse user from localStorage", error);
+            localStorage.removeItem('navroseUser');
+        } finally {
+             setLoading(false);
+        }
+
+        const fetchPaymentSettings = async () => {
+            try {
+                const docRef = db.collection('settings').doc('payment');
+                const docSnap = await docRef.get();
+                if (docSnap.exists) {
+                    const data = docSnap.data();
+                    // Ensure both fields exist to prevent errors
+                    setPaymentSettings({
+                        upiId: data.upiId || '7696272780@okbizaxis',
+                        qrCodeBase64: data.qrCodeBase64 || null
+                    });
+                }
+            } catch (error) {
+                console.error("Could not fetch payment settings, using default.", error);
+            }
+        };
+        fetchPaymentSettings();
+    }, []);
+    
+    const showToast = (message, type = 'info') => {
+        setToast({ show: true, message, type });
+    };
+    const hideToast = () => {
+        setToast(prev => ({ ...prev, show: false }));
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('navroseUser');
+        setCurrentUser(null);
+        setView('home');
+    };
+    
+    const handleLoginSuccess = (user, successMessage) => {
+        localStorage.setItem('navroseUser', JSON.stringify(user));
+        setCurrentUser(user);
+        setShowLogin(false);
+        if (successMessage) {
+            showToast(successMessage, 'success');
+        }
+        
+        if (actionQueue) {
+            actionQueue();
+            setActionQueue(null);
+        }
+    };
+
+    const handleAddToCart = (item) => {
+        setCart(prevCart => {
+            const existingItem = prevCart.find(cartItem => cartItem.id === item.id);
+            if (existingItem) {
+                showToast(`${item.title || item.name} is already in your cart.`, 'info');
+                return prevCart;
+            }
+            showToast(`${item.title || item.name} added to cart!`, 'success');
+            return [...prevCart, { ...item, quantity: 1 }];
+        });
+    };
+
+    const handleUpdateCartQuantity = (itemId, newQuantity) => {
+        if (newQuantity < 1) return;
+        setCart(prevCart => prevCart.map(item => item.id === itemId ? { ...item, quantity: newQuantity } : item));
+    };
+
+    const handleRemoveFromCart = (itemId) => {
+        setCart(prevCart => prevCart.filter(item => item.id !== itemId));
+    };
+
+    const handleConfirmOrder = () => {
+        if (!currentUser) {
+            setActionQueue(() => () => handleConfirmOrder());
+            setShowCart(false);
+            setShowLogin(true);
+            return;
+        }
+
+        if (cart.length === 0) {
+            setOrderConfirmation({ show: true, message: "Your cart is empty." });
+            return;
+        }
+
+        setShowCart(false);
+        setShowPaymentModal(true);
+    };
+
+    const handleSubmitOrderWithProof = async (paymentProofBase64) => {
+        if (!paymentProofBase64) {
+            alert("Please upload payment proof to continue.");
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const order = {
+                user: currentUser.mobile,
+                userName: currentUser.name,
+                items: cart.map(item => ({ id: item.id, title: item.title || item.name, price: item.price, quantity: item.quantity })),
+                total: cart.reduce((total, item) => total + ((item.price || 0) * (item.quantity || 1)), 0),
+                status: 'pending',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                paymentProofImage: paymentProofBase64,
+            };
+            await db.collection('kitchenOrders').add(order);
+            
+            setCart([]);
+            setShowPaymentModal(false);
+            setOrderConfirmation({ show: true, message: 'Your order and payment proof have been submitted! We will verify it and confirm your order shortly.' });
+        } catch (error) {
+            console.error("Error placing order: ", error);
+            setOrderConfirmation({ show: true, message: "Failed to place order. Please try again." });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+
+    const renderView = () => {
+        switch (view) {
+            case 'postAd':
+                return <PostAdPage currentUser={currentUser} onAdPosted={() => setView('myAds')} />;
+            case 'postFreelance':
+                return <PostFreelancePage currentUser={currentUser} onProfilePosted={() => setView('myFreelanceProfile')} />;
+            case 'myAds':
+                return <MyAdsPage currentUser={currentUser} />;
+            case 'myFreelanceProfile':
+                return <MyFreelanceProfilePage currentUser={currentUser} setView={setView} />;
+            case 'myOrders':
+                return <MyOrdersPage currentUser={currentUser} />;
+            case 'kitchen':
+                return <KitchenPage onAddToCart={handleAddToCart} />;
+            case 'flashOffers':
+                return <FlashOffersPage />;
+            default:
+                return <HomePage onAddToCart={handleAddToCart} />;
+        }
+    };
+    
+    if (loading) {
+        return <LoadingSpinner />;
+    }
+
+    return (
+        <div id="app-container">
+            <Header 
+                currentUser={currentUser} 
+                onLogout={handleLogout} 
+                setView={setView} 
+                onShowLogin={() => setShowLogin(true)}
+                cartItemCount={cart.length}
+                onShowCart={() => setShowCart(true)}
+                onShowChat={() => setShowChatbot(true)}
+            />
+            {renderView()}
+            {showLogin && <LoginPage onLoginSuccess={handleLoginSuccess} onCancel={() => {setShowLogin(false); setActionQueue(null);}} showToast={showToast} />}
+            {showCart && <CartPage cart={cart} onUpdateQuantity={handleUpdateCartQuantity} onRemove={handleRemoveFromCart} onConfirm={handleConfirmOrder} onCancel={() => setShowCart(false)} isSubmitting={isSubmitting} />}
+            {showChatbot && <ChatbotModal show={showChatbot} onClose={() => setShowChatbot(false)} />}
+            {showPaymentModal && <PaymentModal show={showPaymentModal} onCancel={() => setShowPaymentModal(false)} cart={cart} onSubmit={handleSubmitOrderWithProof} isSubmitting={isSubmitting} paymentSettings={paymentSettings} />}
+            <OrderConfirmationModal show={orderConfirmation.show} message={orderConfirmation.message} onClose={() => setOrderConfirmation({ show: false, message: '' })} />
+            <Toast show={toast.show} message={toast.message} type={toast.type} onHide={hideToast} />
+        </div>
+    );
+};
+
+const rootElement = document.getElementById('root');
+if (rootElement) {
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(<App />);
+}
+    </script>
+<script type="module" src="/index.tsx"></script>
+
+<script src="./script.js"></script></body></html>
