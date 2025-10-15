@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class=""><head><script>window.livecodes = window.livecodes || {};</script><title>Navrose earning app ver2.0</title><meta name="title" content="Navrose earning app ver2.0"><meta name="description" content="New Ecom style "><meta charset="UTF-8">
+<html lang="en" class=""><head><script>window.livecodes = window.livecodes || {};</script><title>Untitled Project</title><meta name="title" content="Untitled Project"><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="./style.css"><script src="https://cdn.jsdelivr.net/npm/es-module-shims@1.10.0/dist/es-module-shims.js" async=""></script><script type="importmap">{
   "imports": {}
 }</script></head><body>
+
 
 
     <meta charset="UTF-8">
@@ -218,11 +219,57 @@ body {
     padding-bottom: 0.5rem;
     border-bottom: 2px solid var(--border-color);
 }
-.product-grid {
+.product-grid { /* Kept for non-slider pages */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1.5rem;
 }
+
+/* --- SLIDER STYLES --- */
+.slider-container {
+    position: relative;
+}
+.slider-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    padding-bottom: 1rem; /* Space for scrollbar if it appears */
+    gap: 1.5rem;
+}
+.slider-track::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+}
+.slider-item {
+    flex: 0 0 auto;
+    width: 220px;
+}
+.slider-btn {
+    position: absolute;
+    top: calc(50% - 30px); /* Adjust vertical position */
+    transform: translateY(-50%);
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+.slider-btn:hover {
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.slider-btn.prev { left: -15px; }
+.slider-btn.next { right: -15px; }
+
+/* --- CARD OVERLAY STYLES --- */
 .product-card, .offer-card {
     background: var(--card-background);
     border-radius: var(--border-radius);
@@ -237,36 +284,51 @@ body {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
+.image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
 .product-image, .offer-image {
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
     background-color: #eee;
+    display: block;
 }
-.product-info, .offer-info {
-    padding: 1rem;
-    text-align: center;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+.product-info-overlay, .offer-info-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2.5rem 1rem 1rem 1rem;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%);
+    color: white;
+    text-align: left;
 }
 .product-title, .offer-title {
+    color: #fff;
+    margin: 0 0 0.25rem;
+    font-weight: bold;
     font-size: 1rem;
-    margin: 0 0 0.5rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 .product-price {
+    color: #f1f1f1;
+    margin: 0;
+    font-weight: normal;
     font-size: 1.1rem;
-    font-weight: bold;
-    color: var(--primary-color);
-    margin: 0 0 1rem;
 }
 .offer-description {
     font-size: 0.9rem;
-    color: var(--text-color-light);
+    color: #eee;
     margin-top: 0;
+}
+.card-actions {
+    padding: 1rem;
+    margin-top: auto;
 }
 
 .btn-secondary {
@@ -278,7 +340,6 @@ body {
     font-weight: 600;
     cursor: pointer;
     width: 100%;
-    margin-top: auto;
     transition: background-color 0.2s;
 }
 .btn-secondary:hover {
@@ -453,10 +514,11 @@ body {
     background: var(--card-background);
     border-radius: var(--border-radius);
     width: 90%;
-    max-width: 800px;
-    height: 90vh;
+    max-width: 600px; /* Reduced width */
+    max-height: 85vh; /* Changed from fixed height */
     display: flex;
     flex-direction: column;
+    position: relative; /* Added for close button */
 }
 .cart-header {
     display: flex;
@@ -541,14 +603,18 @@ body {
 .cart-summary {
     padding: 1.5rem;
     border-top: 1px solid var(--border-color);
-    text-align: right;
+}
+.cart-summary .totals-section p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
 }
 .cart-summary h3 {
-    margin: 0 0 1rem;
+    margin: 1rem 0;
 }
 .cart-summary .btn-primary {
-    width: auto;
+    width: 100%;
     padding: 0.75rem 2rem;
+    margin-top: 1rem;
 }
 
 /* --- ORDER CONFIRMATION MODAL --- */
@@ -715,6 +781,8 @@ body {
     .logo { font-size: 1.5rem; }
     .cart-item { flex-direction: column; align-items: flex-start; }
     .cart-item-actions { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
+    .slider-btn { display: none; } /* Hide buttons on mobile, rely on swipe */
+    .slider-item { width: 170px; }
 }
     </style>
 <link rel="stylesheet" href="/index.css">
@@ -806,11 +874,11 @@ const OrderConfirmationModal = ({ show, message, onClose }) => {
 };
 
 // --- NEW PAYMENT MODAL COMPONENT ---
-const PaymentModal = ({ show, onCancel, cart, onSubmit, isSubmitting, paymentSettings }) => {
+const PaymentModal = ({ show, onCancel, orderSummary, onSubmit, isSubmitting, paymentSettings }) => {
     if (!show) return null;
 
     const [paymentProof, setPaymentProof] = useState(null);
-    const total = useMemo(() => cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0), [cart]);
+    const total = orderSummary ? orderSummary.finalTotal : 0;
 
     const handleFileChange = async (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -1054,6 +1122,7 @@ const Header = ({ currentUser, onLogout, setView, onShowLogin, cartItemCount, on
                                 <div className="dropdown-menu">
                                     <div className="dropdown-header">
                                         Signed in as <br/><strong>{currentUser.name}</strong><br/><small>{currentUser.mobile}</small>
+                                        <div style={{marginTop: '0.5rem', color: 'var(--secondary-color)', fontWeight: 'bold'}}>Coins: {currentUser.coins || 0}</div>
                                     </div>
                                     <a onClick={() => handleMenuClick('postAd')}>Post New Ad</a>
                                     <a onClick={() => handleMenuClick('postFreelance')}>Become a Freelancer</a>
@@ -1097,25 +1166,36 @@ const LoginPage = ({ onLoginSuccess, onCancel, showToast }) => {
             const userDoc = await userDocRef.get();
             
             if (userDoc.exists) {
-                const data = userDoc.data();
-                if (data && data.name !== name) {
+                const userData = userDoc.data();
+                if (userData && userData.name !== name) {
                      await userDocRef.update({ name });
                 }
-                onLoginSuccess({ name, mobile: phoneNumber }, 'Login successful. Welcome back!');
+                await db.collection('login_activity').add({
+                    userId: phoneNumber,
+                    loginAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                onLoginSuccess({ ...userData, name, mobile: phoneNumber }, 'Login successful. Welcome back!');
 
             } else {
-                await userDocRef.set({
+                 const newUser = {
                     name: name,
                     mobile: phoneNumber,
                     role: 'user',
+                    coins: 0,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                await userDocRef.set(newUser);
+                await db.collection('login_activity').add({
+                    userId: phoneNumber,
+                    loginAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                onLoginSuccess({ name, mobile: phoneNumber }, 'Registration successful! Welcome to Navrose.');
+                onLoginSuccess(newUser, 'Registration successful! Welcome to Navrose.');
             }
 
         } catch (err) {
             showToast('An error occurred. Please try again.', 'error');
             console.error(err);
+        } finally {
             setLoading(false);
         }
     };
@@ -1157,7 +1237,6 @@ const ProductCard = ({ item, onAddToCart, type }) => {
                 alert('Contact information for this freelancer is not available.');
             }
         } else {
-            // This is for 'marketplace' and 'kitchen'
             onAddToCart(item);
         }
     };
@@ -1170,10 +1249,14 @@ const ProductCard = ({ item, onAddToCart, type }) => {
 
     return (
         <div className="product-card">
-            <img src={item.imageBase64 || 'https://via.placeholder.com/300'} alt={item.title || item.name} className="product-image" />
-            <div className="product-info">
-                <h3 className="product-title">{item.title || item.name}</h3>
-                <p className="product-price">₹{item.price}</p>
+            <div className="image-container">
+                <img src={item.imageBase64 || 'https://via.placeholder.com/300'} alt={item.title || item.name} className="product-image" />
+                <div className="product-info-overlay">
+                    <h3 className="product-title">{item.title || item.name}</h3>
+                    <p className="product-price">₹{item.price}</p>
+                </div>
+            </div>
+            <div className="card-actions">
                 <button className="btn-secondary" onClick={handleAction}>{getButtonText()}</button>
             </div>
         </div>
@@ -1182,13 +1265,103 @@ const ProductCard = ({ item, onAddToCart, type }) => {
 
 const OfferCard = ({ offer }) => (
     <div className="offer-card">
-        <img src={offer.imageBase64 || 'https://via.placeholder.com/300'} alt={offer.title} className="offer-image" />
-        <div className="offer-info">
-            <h3 className="offer-title">{offer.title}</h3>
-            <p className="offer-description">{offer.description}</p>
+        <div className="image-container">
+            <img src={offer.imageBase64 || 'https://via.placeholder.com/300'} alt={offer.title} className="offer-image" />
+            <div className="offer-info-overlay">
+                <h3 className="offer-title">{offer.title}</h3>
+                <p className="offer-description">{offer.description}</p>
+            </div>
         </div>
     </div>
 );
+
+// --- SLIDER COMPONENTS ---
+const ProductSlider = ({ items, onAddToCart, type, title }) => {
+    const trackRef = useRef(null);
+    const autoScrollRef = useRef(null);
+
+    const scroll = (direction) => {
+        if (trackRef.current) {
+            const scrollAmount = trackRef.current.offsetWidth * 0.8;
+            trackRef.current.scrollLeft += direction === 'next' ? scrollAmount : -scrollAmount;
+        }
+    };
+    
+    const stopAutoScroll = () => {
+        if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+    };
+
+    const startAutoScroll = () => {
+        stopAutoScroll();
+        autoScrollRef.current = setInterval(() => {
+            if (trackRef.current) {
+                const track = trackRef.current;
+                const firstItem = track.querySelector('.slider-item');
+                if (!firstItem) return;
+                
+                const itemWidth = firstItem.offsetWidth + parseFloat(getComputedStyle(firstItem).marginRight || 0);
+                const isAtEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
+
+                if (isAtEnd) {
+                    track.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    track.scrollBy({ left: itemWidth, behavior: 'smooth' });
+                }
+            }
+        }, 4000);
+    };
+
+    useEffect(() => {
+        startAutoScroll();
+        return () => stopAutoScroll();
+    }, [items.length]);
+
+    if (!items || items.length === 0) return null;
+
+    return (
+        <section className="category-section">
+            <h2>{title}</h2>
+            <div className="slider-container" onMouseEnter={stopAutoScroll} onMouseLeave={startAutoScroll}>
+                <button className="slider-btn prev" onClick={() => scroll('prev')}>&#10094;</button>
+                <div className="slider-track" ref={trackRef}>
+                    {items.map(item => (
+                        <div className="slider-item" key={`${type}-${item.id}`}>
+                            <ProductCard item={item} onAddToCart={onAddToCart} type={type} />
+                        </div>
+                    ))}
+                </div>
+                <button className="slider-btn next" onClick={() => scroll('next')}>&#10095;</button>
+            </div>
+        </section>
+    );
+};
+
+const OfferSlider = ({ offers, title }) => {
+    const trackRef = useRef(null);
+    const scroll = (direction) => {
+        if (trackRef.current) {
+            const scrollAmount = trackRef.current.offsetWidth * 0.8;
+            trackRef.current.scrollLeft += direction === 'next' ? scrollAmount : -scrollAmount;
+        }
+    };
+    if (!offers || offers.length === 0) return null;
+    return (
+        <section className="category-section">
+            <h2>{title}</h2>
+            <div className="slider-container">
+                <button className="slider-btn prev" onClick={() => scroll('prev')}>&#10094;</button>
+                <div className="slider-track" ref={trackRef}>
+                    {offers.map(offer => (
+                        <div className="slider-item" key={`offer-${offer.id}`}>
+                            <OfferCard offer={offer} />
+                        </div>
+                    ))}
+                </div>
+                <button className="slider-btn next" onClick={() => scroll('next')}>&#10095;</button>
+            </div>
+        </section>
+    );
+};
 
 
 // --- VIEWS / PAGES ---
@@ -1202,22 +1375,22 @@ const HomePage = ({ onAddToCart }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const adsSnap = await db.collection('ads').where('status', '==', 'approved').limit(4).get();
+                const adsSnap = await db.collection('ads').where('status', '==', 'approved').limit(8).get();
                 const adsData = adsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 adsData.sort((a, b) => ((b.createdAt && b.createdAt.toMillis()) || 0) - ((a.createdAt && a.createdAt.toMillis()) || 0));
                 setAds(adsData);
 
-                const kitchenSnap = await db.collection('kitchenItems').where('isAvailable', '==', true).limit(4).get();
+                const kitchenSnap = await db.collection('kitchenItems').where('isAvailable', '==', true).limit(8).get();
                 const kitchenData = kitchenSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 kitchenData.sort((a, b) => ((b.createdAt && b.createdAt.toMillis()) || 0) - ((a.createdAt && a.createdAt.toMillis()) || 0));
                 setKitchenItems(kitchenData);
                 
-                const freelanceSnap = await db.collection('freelanceProfiles').where('status', '==', 'active').limit(4).get();
+                const freelanceSnap = await db.collection('freelanceProfiles').where('status', '==', 'active').limit(8).get();
                 const freelanceData = freelanceSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 freelanceData.sort((a, b) => ((b.createdAt && b.createdAt.toMillis()) || 0) - ((a.createdAt && a.createdAt.toMillis()) || 0));
                 setFreelanceProfiles(freelanceData);
                 
-                const boosterSnap = await db.collection('boosterOffers').orderBy('createdAt', 'desc').limit(4).get();
+                const boosterSnap = await db.collection('boosterOffers').orderBy('createdAt', 'desc').limit(8).get();
                 const boosterData = boosterSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setBoosterOffers(boosterData);
 
@@ -1234,38 +1407,10 @@ const HomePage = ({ onAddToCart }) => {
 
     return (
         <main className="main-content">
-             {boosterOffers.length > 0 && (
-                <section className="category-section">
-                    <h2>Today's Flash Offers</h2>
-                    <div className="product-grid">
-                        {boosterOffers.map((offer) => <OfferCard key={`offer-${offer.id}`} offer={offer} />)}
-                    </div>
-                </section>
-            )}
-            {ads.length > 0 && (
-                <section className="category-section">
-                    <h2>Marketplace</h2>
-                    <div className="product-grid">
-                        {ads.map((ad) => <ProductCard key={`ad-${ad.id}`} item={ad} onAddToCart={onAddToCart} type="marketplace" />)}
-                    </div>
-                </section>
-            )}
-            {kitchenItems.length > 0 && (
-                <section className="category-section">
-                    <h2>Ghar Ki Kitchen</h2>
-                    <div className="product-grid">
-                        {kitchenItems.map((item) => <ProductCard key={`kitchen-${item.id}`} item={item} onAddToCart={onAddToCart} type="kitchen" />)}
-                    </div>
-                </section>
-            )}
-             {freelanceProfiles.length > 0 && (
-                <section className="category-section">
-                    <h2>Freelance Services</h2>
-                    <div className="product-grid">
-                        {freelanceProfiles.map((profile) => <ProductCard key={`freelance-${profile.id}`} item={profile} onAddToCart={onAddToCart} type="freelance" />)}
-                    </div>
-                </section>
-            )}
+            <OfferSlider title="Today's Flash Offers" offers={boosterOffers} />
+            <ProductSlider title="Marketplace" items={ads} onAddToCart={onAddToCart} type="marketplace" />
+            <ProductSlider title="Ghar Ki Kitchen" items={kitchenItems} onAddToCart={onAddToCart} type="kitchen" />
+            <ProductSlider title="Freelance Services" items={freelanceProfiles} onAddToCart={onAddToCart} type="freelance" />
         </main>
     );
 };
@@ -1626,7 +1771,7 @@ const MyOrdersPage = ({ currentUser }) => {
                                 </div>
                                 <div className="order-summary">
                                     <span className={`status-badge status-${order.status}`}>{order.status}</span>
-                                    <p className="order-total">Total: ₹{(order.total || 0).toFixed(2)}</p>
+                                    <p className="order-total">Total: ₹{(order.finalTotal || 0).toFixed(2)}</p>
                                 </div>
                             </div>
                             <ul className="order-items">
@@ -1645,8 +1790,77 @@ const MyOrdersPage = ({ currentUser }) => {
     );
 };
 
-const CartPage = ({ cart, onUpdateQuantity, onRemove, onConfirm, onCancel, isSubmitting }) => {
+const CartPage = ({ cart, onUpdateQuantity, onRemove, onConfirm, onCancel, isSubmitting, currentUser, paymentSettings, showToast }) => {
+    const [promoInput, setPromoInput] = useState('');
+    const [appliedPromo, setAppliedPromo] = useState(null);
+    const [redeemCoinsChecked, setRedeemCoinsChecked] = useState(false);
+
+    const { promoEligibleItemIds = [] } = paymentSettings;
+
     const subtotal = useMemo(() => cart.reduce((total, item) => total + ((item.price || 0) * (item.quantity || 1)), 0), [cart]);
+
+    const promoEligibleSubtotal = useMemo(() => {
+        if (!appliedPromo) return 0;
+        return cart.reduce((total, item) => {
+            if (promoEligibleItemIds.includes(item.id)) {
+                return total + ((item.price || 0) * (item.quantity || 1));
+            }
+            return total;
+        }, 0);
+    }, [cart, appliedPromo, promoEligibleItemIds]);
+
+    const promoDiscount = useMemo(() => {
+        if (!appliedPromo || promoEligibleItemIds.length === 0) return 0;
+        return promoEligibleSubtotal * (paymentSettings.promoDiscount / 100);
+    }, [appliedPromo, promoEligibleSubtotal, paymentSettings.promoDiscount, promoEligibleItemIds]);
+
+    const coinValues = useMemo(() => {
+        if (!redeemCoinsChecked || !currentUser || !currentUser.coins || currentUser.coins <= 0) {
+            return { discount: 0, coinsToRedeem: 0 };
+        }
+        const potentialCoinValue = (currentUser.coins || 0) * paymentSettings.coinValue;
+        const availableTotalForDiscount = subtotal - promoDiscount;
+        const actualDiscount = Math.min(potentialCoinValue, availableTotalForDiscount);
+        const coinsToRedeem = paymentSettings.coinValue > 0 ? Math.ceil(actualDiscount / paymentSettings.coinValue) : 0;
+        
+        return { discount: actualDiscount, coinsToRedeem };
+    }, [redeemCoinsChecked, currentUser, subtotal, promoDiscount, paymentSettings.coinValue]);
+
+    const finalTotal = subtotal - promoDiscount - coinValues.discount;
+
+    useEffect(() => {
+        if (appliedPromo && subtotal < paymentSettings.promoMinOrder) {
+            setAppliedPromo(null);
+            showToast('Promo code removed: order total is below minimum.', 'error');
+        }
+    }, [subtotal, appliedPromo, paymentSettings.promoMinOrder, showToast]);
+    
+    const handleApplyPromo = () => {
+        if (promoInput.trim().toLowerCase() === paymentSettings.promoCode.toLowerCase()) {
+            if (subtotal >= paymentSettings.promoMinOrder) {
+                setAppliedPromo({ code: promoInput, discount: paymentSettings.promoDiscount });
+                showToast(`Promo '${promoInput}' applied!`, 'success');
+                setRedeemCoinsChecked(false); // Can't use both
+            } else {
+                showToast(`Order must be over ₹${paymentSettings.promoMinOrder} to use this promo.`, 'error');
+            }
+        } else {
+            showToast('Invalid promo code.', 'error');
+        }
+    };
+    
+    const handleConfirm = () => {
+        const orderSummary = {
+            cart,
+            subtotal,
+            promoCode: appliedPromo ? appliedPromo.code : null,
+            promoDiscount,
+            coinsRedeemed: coinValues.coinsToRedeem,
+            coinDiscount: coinValues.discount,
+            finalTotal,
+        };
+        onConfirm(orderSummary);
+    };
 
     return (
         <div className="modal-overlay">
@@ -1679,8 +1893,32 @@ const CartPage = ({ cart, onUpdateQuantity, onRemove, onConfirm, onCancel, isSub
                             ))}
                         </div>
                         <div className="cart-summary">
-                            <h3>Subtotal: ₹{subtotal.toFixed(2)}</h3>
-                            <button className="btn-primary" onClick={onConfirm} disabled={isSubmitting}>
+                            <div className="promo-section" style={{textAlign: 'left', marginBottom: '1rem'}}>
+                                {!appliedPromo && (
+                                    <div style={{display: 'flex', gap: '0.5rem', alignItems: 'center'}}>
+                                        <input type="text" placeholder="Enter promo code" value={promoInput} onChange={e => setPromoInput(e.target.value)} style={{flexGrow: 1, padding: '0.6rem'}}/>
+                                        <button onClick={handleApplyPromo} className="btn-secondary" style={{width: 'auto', padding: '0.6rem 1rem', flexShrink: 0}}>Apply</button>
+                                    </div>
+                                )}
+                                {currentUser && (currentUser.coins || 0) > 0 && !appliedPromo && (
+                                    <div className="form-group" style={{marginTop: '1rem', marginBottom: 0}}>
+                                        <label style={{display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 'normal'}}>
+                                            <input type="checkbox" checked={redeemCoinsChecked} onChange={e => setRedeemCoinsChecked(e.target.checked)} />
+                                            Redeem {currentUser.coins} coins for up to ₹{((currentUser.coins || 0) * paymentSettings.coinValue).toFixed(2)} discount
+                                        </label>
+                                    </div>
+                                )}
+                                 {appliedPromo && <p style={{color: 'var(--text-color-light)', marginTop: '1rem'}}>Cannot redeem coins when a promo code is applied.</p>}
+                            </div>
+
+                            <div className="totals-section" style={{textAlign: 'right'}}>
+                                <p>Subtotal: <strong>₹{subtotal.toFixed(2)}</strong></p>
+                                {promoDiscount > 0 && <p style={{color: 'var(--secondary-color)'}}>Promo Discount: <strong>-₹{promoDiscount.toFixed(2)}</strong></p>}
+                                {coinValues.discount > 0 && <p style={{color: 'var(--secondary-color)'}}>Coin Discount: <strong>-₹{coinValues.discount.toFixed(2)}</strong></p>}
+                                <hr style={{border: 'none', borderTop: '1px solid var(--border-color)', margin: '0.5rem 0'}} />
+                                <h3>Total: ₹{finalTotal.toFixed(2)}</h3>
+                            </div>
+                            <button className="btn-primary" onClick={handleConfirm} disabled={isSubmitting}>
                                 {isSubmitting ? 'Proceeding...' : 'Confirm Order'}
                             </button>
                         </div>
@@ -1705,7 +1943,20 @@ const App = () => {
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [orderConfirmation, setOrderConfirmation] = useState({ show: false, message: '' });
-    const [paymentSettings, setPaymentSettings] = useState({ upiId: '7696272780@okbizaxis', qrCodeBase64: null });
+    const [pendingOrder, setPendingOrder] = useState(null);
+    const [paymentSettings, setPaymentSettings] = useState({ 
+        upiId: '7696272780@okbizaxis', 
+        qrCodeBase64: null,
+        promoCode: 'navrose',
+        promoDiscount: 10,
+        promoMinOrder: 100,
+        promoEligibleItemIds: [],
+        coinsPerOrder: 10,
+        bonusCoins: 1500,
+        bonusThreshold: 1000,
+        coinValue: 0.05,
+        coinEligibleItemIds: []
+    });
     const [toast, setToast] = useState({ show: false, message: '', type: '' });
 
 
@@ -1728,11 +1979,7 @@ const App = () => {
                 const docSnap = await docRef.get();
                 if (docSnap.exists) {
                     const data = docSnap.data();
-                    // Ensure both fields exist to prevent errors
-                    setPaymentSettings({
-                        upiId: data.upiId || '7696272780@okbizaxis',
-                        qrCodeBase64: data.qrCodeBase64 || null
-                    });
+                    setPaymentSettings(prev => ({ ...prev, ...data }));
                 }
             } catch (error) {
                 console.error("Could not fetch payment settings, using default.", error);
@@ -1741,7 +1988,7 @@ const App = () => {
         fetchPaymentSettings();
     }, []);
     
-    const showToast = (message, type = 'info') => {
+    const showToast = (message, type = 'success') => {
         setToast({ show: true, message, type });
     };
     const hideToast = () => {
@@ -1789,48 +2036,95 @@ const App = () => {
         setCart(prevCart => prevCart.filter(item => item.id !== itemId));
     };
 
-    const handleConfirmOrder = () => {
+    const handleConfirmOrder = (orderSummary) => {
         if (!currentUser) {
-            setActionQueue(() => () => handleConfirmOrder());
+            setActionQueue(() => () => handleConfirmOrder(orderSummary));
             setShowCart(false);
             setShowLogin(true);
             return;
         }
 
         if (cart.length === 0) {
-            setOrderConfirmation({ show: true, message: "Your cart is empty." });
+            showToast("Your cart is empty.", 'error');
             return;
         }
-
+        setPendingOrder(orderSummary);
         setShowCart(false);
         setShowPaymentModal(true);
     };
 
     const handleSubmitOrderWithProof = async (paymentProofBase64) => {
+        if (!pendingOrder) {
+            showToast("No order to submit.", "error"); return;
+        }
         if (!paymentProofBase64) {
-            alert("Please upload payment proof to continue.");
-            return;
+            showToast("Please upload payment proof to continue.", "error"); return;
         }
 
         setIsSubmitting(true);
         try {
-            const order = {
-                user: currentUser.mobile,
-                userName: currentUser.name,
-                items: cart.map(item => ({ id: item.id, title: item.title || item.name, price: item.price, quantity: item.quantity })),
-                total: cart.reduce((total, item) => total + ((item.price || 0) * (item.quantity || 1)), 0),
-                status: 'pending',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                paymentProofImage: paymentProofBase64,
-            };
-            await db.collection('kitchenOrders').add(order);
+            const userRef = db.collection('users').doc(currentUser.mobile);
+            const orderRef = db.collection('kitchenOrders').doc();
+
+            await db.runTransaction(async (transaction) => {
+                const userDoc = await transaction.get(userRef);
+                if (!userDoc.exists) { throw new Error("User document does not exist."); }
+                
+                let currentCoins = userDoc.data().coins || 0;
+                let newCoins = currentCoins - (pendingOrder.coinsRedeemed || 0);
+                
+                if (!pendingOrder.promoCode) {
+                    const hasEligibleItemForCoins = pendingOrder.cart.some(item => 
+                        (paymentSettings.coinEligibleItemIds || []).includes(item.id)
+                    );
+                    
+                    if (hasEligibleItemForCoins) {
+                        if (pendingOrder.subtotal >= paymentSettings.bonusThreshold) {
+                            newCoins += paymentSettings.bonusCoins;
+                        } else {
+                            newCoins += paymentSettings.coinsPerOrder;
+                        }
+                    }
+                }
+
+                const orderData = {
+                    user: currentUser.mobile,
+                    userName: currentUser.name,
+                    items: pendingOrder.cart.map(i => ({ id: i.id, title: i.title || i.name, price: i.price, quantity: i.quantity })),
+                    subtotal: pendingOrder.subtotal,
+                    promoCode: pendingOrder.promoCode || null,
+                    promoDiscount: pendingOrder.promoDiscount || 0,
+                    coinsRedeemed: pendingOrder.coinsRedeemed || 0,
+                    coinDiscount: pendingOrder.coinDiscount || 0,
+                    finalTotal: pendingOrder.finalTotal,
+                    status: 'pending',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    paymentProofImage: paymentProofBase64,
+                };
+                transaction.set(orderRef, orderData);
+                transaction.update(userRef, { coins: newCoins });
+            });
+            
+            // Success
+            let coinsEarned = 0;
+            if (!pendingOrder.promoCode) {
+                const hasEligibleItem = pendingOrder.cart.some(item => (paymentSettings.coinEligibleItemIds || []).includes(item.id));
+                if (hasEligibleItem) {
+                     coinsEarned = pendingOrder.subtotal >= paymentSettings.bonusThreshold ? paymentSettings.bonusCoins : paymentSettings.coinsPerOrder;
+                }
+            }
+
+            const updatedUser = { ...currentUser, coins: (currentUser.coins || 0) - (pendingOrder.coinsRedeemed || 0) + coinsEarned };
+            setCurrentUser(updatedUser);
+            localStorage.setItem('navroseUser', JSON.stringify(updatedUser));
             
             setCart([]);
             setShowPaymentModal(false);
-            setOrderConfirmation({ show: true, message: 'Your order and payment proof have been submitted! We will verify it and confirm your order shortly.' });
+            setPendingOrder(null);
+            setOrderConfirmation({ show: true, message: 'Your order has been submitted! We will verify it and confirm shortly.' });
         } catch (error) {
             console.error("Error placing order: ", error);
-            setOrderConfirmation({ show: true, message: "Failed to place order. Please try again." });
+            setOrderConfirmation({ show: true, message: `Failed to place order: ${error.message || 'Please try again.'}` });
         } finally {
             setIsSubmitting(false);
         }
@@ -1875,9 +2169,9 @@ const App = () => {
             />
             {renderView()}
             {showLogin && <LoginPage onLoginSuccess={handleLoginSuccess} onCancel={() => {setShowLogin(false); setActionQueue(null);}} showToast={showToast} />}
-            {showCart && <CartPage cart={cart} onUpdateQuantity={handleUpdateCartQuantity} onRemove={handleRemoveFromCart} onConfirm={handleConfirmOrder} onCancel={() => setShowCart(false)} isSubmitting={isSubmitting} />}
+            {showCart && <CartPage cart={cart} onUpdateQuantity={handleUpdateCartQuantity} onRemove={handleRemoveFromCart} onConfirm={handleConfirmOrder} onCancel={() => setShowCart(false)} isSubmitting={isSubmitting} currentUser={currentUser} paymentSettings={paymentSettings} showToast={showToast} />}
             {showChatbot && <ChatbotModal show={showChatbot} onClose={() => setShowChatbot(false)} />}
-            {showPaymentModal && <PaymentModal show={showPaymentModal} onCancel={() => setShowPaymentModal(false)} cart={cart} onSubmit={handleSubmitOrderWithProof} isSubmitting={isSubmitting} paymentSettings={paymentSettings} />}
+            {showPaymentModal && <PaymentModal show={showPaymentModal} onCancel={() => setShowPaymentModal(false)} orderSummary={pendingOrder} onSubmit={handleSubmitOrderWithProof} isSubmitting={isSubmitting} paymentSettings={paymentSettings} />}
             <OrderConfirmationModal show={orderConfirmation.show} message={orderConfirmation.message} onClose={() => setOrderConfirmation({ show: false, message: '' })} />
             <Toast show={toast.show} message={toast.message} type={toast.type} onHide={hideToast} />
         </div>
